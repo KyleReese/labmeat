@@ -68,7 +68,7 @@ def saveImageOne(iteration):
 
 if __name__ == "__main__":
     print("Autograd LabMeat")
-    numNodes = 2
+    numNodes = 4
     stepSize = 0.1 # 0.008
     path_to_diffuse_pngs = 'LabMeatMain3/diffusePngs/'
     sim_img_folder = 'LabMeatMain3/imgs/'
@@ -88,19 +88,21 @@ if __name__ == "__main__":
     all_loss = []
     time_lst = []
     fitnessList = []
+    values = []
 
     def fitnessValue(movablePoints, iteration):
         global fitnessList
         # only the moveable points are passed in since they will be differentiated
         # need to run the dynamics in the function! Not outside the function then pass it in
-        (dynamicsTrue, fitnessList, odeDeltaList, pdeDeltaList) = getDynamics(vas_structure, 
+        (dynamicsTrue, fitnessList, odeDeltaList, pdeDeltaList, values) = getDynamics(vas_structure, 
                                                                             getTrueParameters(), 
                                                                             nonLinear=True, 
                                                                             movablePts=movablePoints,
                                                                             runParameters = getSampleParameters())
         #only use the last 30% for the fitness, once the system has reached a stable state
         (max_t, count) = getSampleParameters()
-        loss = np.cumsum(fitnessList[int(count*.30):-1])[-1]
+        # loss = np.cumsum(fitnessList[int(count*.30):-1])[-1]
+        loss = np.sum(values)
         return loss
 
     # Set up figures
@@ -214,7 +216,8 @@ if __name__ == "__main__":
         mvable_pts = flat_list
         print('Updated mvable_pts:\n', mvable_pts)
         vas_structure.update_moveable_pts(mvable_pts)
-        newFitness = np.cumsum(fitnessList[int(count*.30):-1])[-1]
+        # newFitness = np.cumsum(fitnessList[int(count*.30):-1])[-1]
+        newFitness = np.sum(values)
 
         flowDict = computeFlow(vas_structure)
         vas_structure.add_flows_to_img(flowDict)
@@ -222,4 +225,8 @@ if __name__ == "__main__":
 
         end = time.time()
         elapsedSec = (end - start)
-        callback(mvable_pts, i, newFitness._value, elapsedSec)
+        try:
+            callback(mvable_pts, i, newFitness._value, elapsedSec)
+        except AttributeError as e:
+            callback(mvable_pts, i, newFitness, elapsedSec)
+        

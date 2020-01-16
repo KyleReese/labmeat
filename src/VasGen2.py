@@ -44,7 +44,7 @@ class VasGen2:
             self.product_values.append([0.0 for i in range(int(max_range + 1.0))])
 
         # Convert Edges to image
-        self.img = self.convert_to_img(self.edges, max_range)
+        self.img = self.convert_to_img(self.moveable_pts, max_range)
         self.diffused_img = None
 
         self.Q = None
@@ -162,25 +162,30 @@ class VasGen2:
     # ==== Convert To Image ==== #
     # ========================== #
     def convert_to_img(self, edges, max_range):
+        print(edges)
         img = []
+        self.int_points = set()
         for _ in range(int(max_range + 1.0)):
             img.append([0.0 for i in range(int(max_range + 1.0))])
 
         for edge in edges:
-            pt1, pt2 = edge
-            pt1 = [int(i) for i in pt1]
-            pt2 = [int(i) for i in pt2]
-            # TODO(zcase): Account for it points go <min or > max for both x and y
-            # print(pt1)
-            # print(pt2)
-            pts_on_line = list(bresenham(pt1[0], pt1[1], pt2[0], pt2[1]))
-            # print(pts_on_line)
-            for x, y in pts_on_line:
-                if (x == pt1[0] and y == pt1[1]) or (x == pt2[0] and y == pt2[1]):
-                    img[x][y] = 2
-                else:
-                    img[x][y] = 1
-
+            print(edge)
+            # pt1, pt2 = edge
+            # pt1 = [int(i) for i in pt1]
+            # pt2 = [int(i) for i in pt2]
+            self.int_points.add((int(edge[0]), int(edge[1])))
+            # self.int_points.add((pt2[0], pt2[1]))
+        #     # TODO(zcase): Account for it points go <min or > max for both x and y
+        #     # print(pt1)
+        #     # print(pt2)
+        #     pts_on_line = list(bresenham(pt1[0], pt1[1], pt2[0], pt2[1]))
+        #     # print(pts_on_line)
+        #     for x, y in pts_on_line:
+        #         if (x == pt1[0] and y == pt1[1]) or (x == pt2[0] and y == pt2[1]):
+        #             img[x][y] = 2
+        #         else:
+        #             img[x][y] = 1
+        print(self.int_points)
         return img
 
     # ============================ #
@@ -310,7 +315,7 @@ class VasGen2:
         self.edges = self.generate_edges(self.tri, self.pts)
 
         self.img = None
-        self.img = self.convert_to_img(self.edges, self.max_range)
+        self.img = self.convert_to_img(self.moveable_pts, self.max_range)
 
         self.update_count = self.update_count + 1
         # self.print_images(graph_name='Vasc_Graph_' + str(self.update_count) + '.png', img_name='Vasc2D_img_' +str(self.update_count)+ '.png')
