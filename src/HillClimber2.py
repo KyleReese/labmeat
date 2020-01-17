@@ -73,7 +73,7 @@ def saveImageOne(iteration):
 
 if __name__ == "__main__":
     print("Climbing the hill")
-    numNodes = 4
+    numNodes = 1
     grid_size = 40
     path_to_diffuse_pngs = 'Hillclimb/diffusePngs/'
     sim_img_folder = 'Hillclimb/imgs/'

@@ -68,8 +68,8 @@ def saveImageOne(iteration):
 
 if __name__ == "__main__":
     print("Autograd LabMeat")
-    numNodes = 4
-    stepSize = 0.1 # 0.008
+    numNodes = 1
+    stepSize = 0.3 # 0.008
     path_to_diffuse_pngs = 'LabMeatMain3/diffusePngs/'
     sim_img_folder = 'LabMeatMain3/imgs/'
     sim_graph_folder = 'LabMeatMain3/graphs/'
@@ -102,7 +102,8 @@ if __name__ == "__main__":
         #only use the last 30% for the fitness, once the system has reached a stable state
         (max_t, count) = getSampleParameters()
         # loss = np.cumsum(fitnessList[int(count*.30):-1])[-1]
-        loss = np.sum(values)
+        print('loss value:', values._value[(10,10)][0])
+        loss = values._value[(10,10)][0]
         return loss
 
     # Set up figures
@@ -185,7 +186,7 @@ if __name__ == "__main__":
     for i in range(200):
         start = time.time()
         grad_pts = gradFitness(mvable_pts, i)
-
+        print('grad:', grad_pts)
         m = (1 - b1) * np.array(grad_pts, dtype=np.float64)      + b1 * m  # First  moment estimate.
         v = (1 - b2) * (np.array(grad_pts, dtype=np.float64)**2) + b2 * v  # Second moment estimate.
         mhat = m / (1 - b1**(i + 1))    # Bias correction.
@@ -217,7 +218,7 @@ if __name__ == "__main__":
         print('Updated mvable_pts:\n', mvable_pts)
         vas_structure.update_moveable_pts(mvable_pts)
         # newFitness = np.cumsum(fitnessList[int(count*.30):-1])[-1]
-        newFitness = np.sum(values)
+        newFitness = vas_structure.nutrient_values[10][10]#np.sum(values)
 
         flowDict = computeFlow(vas_structure)
         vas_structure.add_flows_to_img(flowDict)

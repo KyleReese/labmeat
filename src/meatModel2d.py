@@ -55,21 +55,21 @@ def oneCell_ODE(oneCell, params, cellId, OnePdeDelta, vas_structure):
         # rate multiplier due to the walls of the vessel
         vesselRate = 1.0 #math.pi * 2 * radius[cellId]
         # Equation 6, Nutrient production from the vessel
-        deltaNutrient = +1*sigmaNu * vesselRate * regulatePlusMinus(100000, k_out, Nu, k_i)
+        deltaNutrient = 0.01#+1*sigmaNu * vesselRate * regulatePlusMinus(1, k_out, Nu, k_i)
         # Equation 8, Waste Uptake into the vessel
         #deltaProduct = -1*sigmaXm * vesselRate * regulatePlusPlus(Q[cellId], k_in, Xm, k_p)
         # eliminate the positive feedback loop, simple rate bound uptake
         # print('dXm', dXm)
         # print('q', vas_structure.Q[cellId])
-        deltaProduct = max(-1*sigmaXm * (vesselRate * hillPlusOne(100000, k_in)), -1* dXm)
+        deltaProduct = 0.01#max(-1*sigmaXm * (vesselRate * hillPlusOne(1, k_in)), -1* dXm)
         #deltaProduct = -1*sigmaXm * (vesselRate * hillPlusOne(Q[cellId], k_in))
     else: # Meat cells secreate waste and takeup nutrients
         # each grid location has a cell
         # Equation 9, pull nutrient from the domain
-        deltaNutrient = -1*muNu * regulatePlusMinus(Nu, k_p, Xm, k_i)
+        deltaNutrient = 0.0#-1*muNu * regulatePlusMinus(Nu, k_p, Xm, k_i)
         # Equation 7 add product 
         #deltaProduct = +1*muXm *regulatePlusMinus(Nu, k_p, Xm, k_i)
-        deltaProduct = +1*muXm *hillPlusOne(Nu, k_p) * hillMinus(Xm, k_i, 1)
+        deltaProduct = 0.0#+1*muXm *hillPlusOne(Nu, k_p) * hillMinus(Xm, k_i, 1)
         #print("Xn = %.10f regulate = %.10f   %.10f" % (Xm, hillPlusOne(Nu, k_p) , hillMinusOne(Xm, k_i))) #regulatePlusMinus(Nu, k_p, Xm, k_i)))
     return np.array([deltaNutrient, deltaProduct])
     
@@ -352,14 +352,14 @@ def solveModelODEPDE(vas_structure, times, params = (), nonLinear = False, movab
         # values_end3 = time.time()
         # print('    Values3: ', values_end3-values_start3, 'seconds')
         results = []
-        decay = 0.00003
-        for ix,iy in np.ndindex(shape_of_img):
-            cellId = (ix, iy)
-            newValue = values[cellId][0] - decay
-            if newValue < 0:
-                newValue = 0
-            results.append([newValue, 0])
-        values = np.reshape(np.array(results), (21,21,2))
+        # decay = 0.0003
+        # for ix,iy in np.ndindex(shape_of_img):
+        #     cellId = (ix, iy)
+        #     newValue = values[cellId][0] - decay
+        #     if newValue < 0:
+        #         newValue = 0.0
+        #     results.append([newValue, values[cellId][1]])
+        # values = np.reshape(np.array(results), (21,21,2))
         # update the fitness
         # get the values of the second protein (the waste)
         # sum up the ODE updates along the vessels. 
@@ -433,7 +433,7 @@ def getDynamics(vas_structure, params, nonLinear = False, movablePts = [], runPa
 def getSampleParameters():
     # how many seconds to run the ODE/PDE for one trajectory, and how many samples
     # return (1000, 1000) 
-    return (300, 300)
+    return (40, 40)
     #return (2,2)
 
 
