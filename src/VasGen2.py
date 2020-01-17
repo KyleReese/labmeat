@@ -374,6 +374,6 @@ class VasGen2:
         self.edges = self.generate_edges(self.tri, self.pts)
 
         self.img = None
-        self.img = self.convert_to_img(self.edges, self.max_range)
+        self.img = self.convert_to_img(self.moveable_pts, self.max_range)
 
         self.update_count = self.update_count + 1

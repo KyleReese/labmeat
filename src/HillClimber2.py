@@ -206,14 +206,15 @@ if __name__ == "__main__":
         vas_structure.add_flows_to_img(flowDict)
         
         
-        (dynamicsTrue, fitnessList, odeDeltaList, pdeDeltaList) = getDynamics(vas_structure, 
+        (dynamicsTrue, fitnessList, odeDeltaList, pdeDeltaList, values) = getDynamics(vas_structure, 
                         getTrueParameters(), 
                         nonLinear = True, 
                         movablePts = vas_structure.moveable_pts,
                         runParameters = getSampleParameters())
 
         (max_t, count) = getSampleParameters()
-        loss = np.cumsum(fitnessList[int(count*.30):-1])[-1]#fitness(mvable_pts, i)
+        loss = vas_structure.nutrient_values[10][10]#np.cumsum(fitnessList[int(count*.30):-1])[-1]#fitness(mvable_pts, i)
+        print('loss', loss)
         
         print('Point change:', originalPoints, mvable_pts[index])
         if loss > currentLoss:
