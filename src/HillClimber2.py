@@ -173,16 +173,33 @@ if __name__ == "__main__":
     currentLoss = -1
     i = 0
     timesNotImproved = 0
-    while timesNotImproved < 50:
+    inc_index_x = 0.01
+    inc_index_y = 0
+    index = 0
+    moveRate = 0.1
+    while timesNotImproved < 5:
         start = time.time()
 
         if not dImproved:
-            index = random.randrange(0, numNodes)
-            inc_index_x = np.random.choice(test_movement, 1, replace=False)[0]
-            inc_index_y = np.random.choice(test_movement, 1, replace=False)[0]
+            if timesNotImproved == 1:
+                inc_index_x = moveRate
+                inc_index_y = 0
+            elif timesNotImproved == 2:
+                inc_index_x = -1 * moveRate
+                inc_index_y = 0
+            elif timesNotImproved == 3:
+                inc_index_x = 0
+                inc_index_y = moveRate
+            elif timesNotImproved == 4:
+                inc_index_x = 0
+                inc_index_y = -1 * moveRate
+            # index = random.randrange(0, numNodes)
+            # inc_index_x = np.random.choice(test_movement, 1, replace=False)[0]
+            # inc_index_y = np.random.choice(test_movement, 1, replace=False)[0]
         else:
-            inc_index_x = adjustMoveRate(inc_index_x)
-            inc_index_y = adjustMoveRate(inc_index_y)
+            # inc_index_x = adjustMoveRate(inc_index_x)
+            # inc_index_y = adjustMoveRate(inc_index_y)
+            timesNotImproved = 0
 
         originalPoints = vas_structure.moveable_pts[index]
             
@@ -235,6 +252,7 @@ if __name__ == "__main__":
         
         vas_structure.print_images(graph_name=sim_graph_folder+'test_graph'+str(i)+'.png', img_name=sim_img_folder+'test_img'+str(i)+'.png')
         i += 1
+    print('final moveable points:', vas_structure.moveable_pts)
 
 
     def img_path_generator(path_to_img_dir):

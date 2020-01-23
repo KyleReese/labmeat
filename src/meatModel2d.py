@@ -433,7 +433,7 @@ def getDynamics(vas_structure, params, nonLinear = False, movablePts = [], runPa
 def getSampleParameters():
     # how many seconds to run the ODE/PDE for one trajectory, and how many samples
     # return (1000, 1000) 
-    return (40, 40)
+    return (1000, 1000)
     #return (2,2)
 
 
